@@ -1,0 +1,16 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "window.title": "📘 Staff Engineer Handbook",
+        "workbench.colorCustomizations": {
+            "titleBar.activeBackground": "#0D47A1",
+            "titleBar.activeForeground": "#FFFFFF",
+            "titleBar.inactiveBackground": "#1565C0",
+            "titleBar.inactiveForeground": "#DDDDDD"
+        }
+    }
+}
