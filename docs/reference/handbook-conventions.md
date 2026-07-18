@@ -1,14 +1,21 @@
 # Handbook Conventions
 
-This document defines the standards and conventions used throughout the Staff Engineer Handbook project.
+This document defines the standards, conventions, and engineering principles used throughout the **Staff Engineering Handbook**.
+
+The objective is to keep the repository consistent, maintainable, and easy to navigate as it grows over time.
 
 ---
 
 # Purpose
 
-The purpose of this repository is to build a personal knowledge base that helps validate the technical skills expected from a Senior or Staff Backend Engineer.
+The Staff Engineering Handbook is a living engineering knowledge base designed to:
 
-The handbook is intended for learning, interview preparation, and long-term reference.
+- develop deep technical understanding;
+- validate engineering concepts through executable examples;
+- prepare for Senior, Staff, and Principal Engineering roles;
+- serve as a long-term technical reference.
+
+The handbook prioritizes understanding over memorization.
 
 ---
 
@@ -16,7 +23,8 @@ The handbook is intended for learning, interview preparation, and long-term refe
 
 - All documentation must be written in English.
 - Discussions and mentoring sessions may be conducted in Spanish.
-- Source code must follow standard C# naming conventions.
+- Source code must follow standard language conventions.
+- Public documentation should be clear, concise, and technically accurate.
 
 ---
 
@@ -24,79 +32,126 @@ The handbook is intended for learning, interview preparation, and long-term refe
 
 ```text
 docs/
+
+    interview/
+        level-1-backend-foundations/
+        level-2-web-apis/
+        level-3-data-access/
+        level-4-cloud/
+        level-5-architecture/
+        level-6-staff-engineering/
+
+    deep-dives/
+        networking/
+        security/
+        kubernetes/
+        docker/
+        cloud/
+        architecture/
+        databases/
+        dotnet-runtime/
+        observability/
+
     reference/
-    level-1-backend-foundations/
-    level-2-web-apis/
-    level-3-data-access/
-    level-4-cloud/
-    level-5-architecture/
-    level-6-staff-engineering/
 
 src/
+
 scripts/
 ```
 
 ---
 
-# Question Format
+# Content Types
 
-Every interview question must contain exactly three sections.
+The repository contains four different kinds of documents.
 
-## Question
+## Interview Questions
 
-The interview question exactly as it could be asked.
+Designed for interview preparation.
 
-## Answer
+Each question contains:
 
-A concise explanation.
-
-The objective is to answer an interview, not to write a book.
-
-## Example
-
-A complete executable example written in C#.
-
-Every example must compile.
+- Question
+- Answer
+- Technical explanation
+- Executable example
 
 ---
 
-# Source Code
+## Deep Dives
 
-Each question must have its own executable example.
+Designed for deep technical learning.
 
-Example:
+Every Deep Dive should follow the standard template:
 
-```text
-Q001ValueTypesVsReferenceTypes.cs
-Q002GarbageCollection.cs
-Q003ValueTypesAlwaysLiveOnStack.cs
-```
-
-Every example must be executable from Program.cs.
+- Objective
+- Why does it exist?
+- Problem it solves
+- Key concepts
+- High-level overview
+- Internal architecture
+- Step-by-step explanation
+- Diagrams
+- Real-world examples
+- Implementation examples
+- Common misconceptions
+- Best practices
+- Summary
+- References
 
 ---
 
-# Naming Convention
+## Hands-on Labs
+
+Executable projects used to validate engineering concepts.
+
+Examples include:
+
+- Console Applications
+- ASP.NET APIs
+- Docker
+- Kubernetes
+- Distributed Systems
+
+---
+
+## Reference
+
+Supporting documentation.
+
+Examples include:
+
+- ADRs
+- Cheat Sheets
+- Diagrams
+- Notes
+- Tables
+- External References
+
+---
+
+# Naming Conventions
+
+## Interview Questions
 
 Questions use a three-digit identifier.
 
-Examples:
+Examples
 
 ```text
 001
 002
 003
 ...
-125
 ```
 
-Documentation:
+Documentation
 
 ```text
 001-value-types-vs-reference-types.md
 ```
 
-Source code:
+Source Code
 
 ```text
 Q001ValueTypesVsReferenceTypes.cs
@@ -104,57 +159,89 @@ Q001ValueTypesVsReferenceTypes.cs
 
 ---
 
-# Quality Rules
+## Deep Dives
 
-Every question must:
+Deep Dives also use sequential numbering.
 
-- compile successfully;
-- provide a runnable example;
-- demonstrate a single concept;
-- avoid unnecessary complexity;
-- avoid introducing unrelated concepts.
+Examples
+
+```text
+001-http.md
+002-https.md
+003-tls-handshake.md
+```
 
 ---
 
-# Examples
+## Hands-on Labs
 
-Examples should demonstrate one concept only.
+Projects should use descriptive names.
 
-Good:
+Examples
 
-- Garbage Collection
-- async/await
-- Boxing
-- Dependency Injection
+```text
+TlsHandshakeDemo
 
-Avoid mixing multiple concepts in the same example.
+GarbageCollectionLab
+
+KubernetesNetworkingLab
+```
+
+---
+
+# Source Code
+
+Whenever possible, concepts should include executable examples.
+
+Examples should:
+
+- compile successfully;
+- demonstrate one concept;
+- avoid unnecessary complexity;
+- be production-quality when practical.
+
+---
+
+# Quality Guidelines
+
+Every document should:
+
+- explain why the technology exists;
+- explain the problem it solves;
+- explain how it works internally;
+- include diagrams whenever they improve understanding;
+- avoid assumptions;
+- be based on verified technical information.
 
 ---
 
 # References
 
-Answers should be based on reliable technical sources whenever possible.
+Whenever possible, use official documentation.
 
 Preferred references include:
 
 - Microsoft Learn
 - Microsoft Documentation
+- Kubernetes Documentation
+- Docker Documentation
+- RFCs
 - C# Language Specification
 - .NET Runtime Documentation
 - Official product documentation
-- Well-established technical authors
 
 ---
 
 # Git Workflow
 
-Recommended workflow:
+Recommended workflow
 
 ```bash
 git status
 git pull
 
 git add .
+
 git commit -m "<type>: <description>"
 
 git push
@@ -163,8 +250,6 @@ git push
 ---
 
 # Commit Convention
-
-Recommended commit prefixes:
 
 | Prefix | Purpose |
 |---------|----------|
@@ -177,27 +262,34 @@ Recommended commit prefixes:
 
 ---
 
-# Long-Term Goal
-
-The handbook should remain:
-
-- simple;
-- practical;
-- executable;
-- easy to review before an interview;
-- based on verified technical knowledge.
-
-The objective is quality rather than quantity.
-
 # Learning Philosophy
 
-Prefer understanding over memorization.
+Every engineering topic should follow the same learning process.
 
-Every concept should be:
+1. Understand the problem.
+2. Learn the underlying concepts.
+3. Explore the internal architecture.
+4. Visualize the solution.
+5. Build executable examples.
+6. Validate the behavior.
+7. Document the knowledge.
+8. Be able to explain it clearly.
 
-1. Understood.
-2. Implemented.
-3. Executed.
-4. Explained in your own words.
+The objective is not to memorize technologies.
 
-If a concept cannot be explained clearly, it should be studied again before considering it complete.
+The objective is to develop engineering intuition through continuous learning, practical implementation, and clear technical communication.
+
+---
+
+# Long-Term Vision
+
+The handbook should evolve into a complete engineering knowledge base that combines:
+
+- theory;
+- implementation;
+- executable examples;
+- architecture discussions;
+- engineering best practices;
+- real-world experience.
+
+Quality, clarity, and consistency should always take precedence over quantity.
