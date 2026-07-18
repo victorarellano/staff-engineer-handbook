@@ -28,7 +28,7 @@ The important characteristic is that value types are copied by value.
 
 Source code:
 
-[Q003ValueTypesAlwaysLiveStack.cs](../../src/Level1.BackendFoundations/Examples/Q003ValueTypesAlwaysLiveStack.cs)
+[Q003ValueTypesAlwaysLiveStack.cs](../../../src/Level1.BackendFoundations/Examples/Q003ValueTypesAlwaysLiveStack.cs)
 
 Run from the repository root:
 

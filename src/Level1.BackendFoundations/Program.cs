@@ -7,12 +7,12 @@ internal static class Program
     private static readonly IReadOnlyDictionary<string, Example> Examples =
         new Dictionary<string, Example>
         {
-            [Q001ValueTypesVsReferenceTypes.Number] = new(
-                Q001ValueTypesVsReferenceTypes.Title,
-                Q001ValueTypesVsReferenceTypes.Run),
-            [Q002GarbageCollection.Number] = new(
-                Q002GarbageCollection.Title,
-                Q002GarbageCollection.Run),
+            [Q005ValueTypesVsReferenceTypes.Number] = new(
+                Q005ValueTypesVsReferenceTypes.Title,
+                Q005ValueTypesVsReferenceTypes.Run),
+            [Q006GarbageCollection.Number] = new(
+                Q006GarbageCollection.Title,
+                Q006GarbageCollection.Run),
             [Q003ValueTypesAlwaysLiveStack.Number] = new(
                 Q003ValueTypesAlwaysLiveStack.Title,
                 Q003ValueTypesAlwaysLiveStack.Run)                

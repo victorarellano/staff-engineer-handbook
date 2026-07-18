@@ -188,3 +188,16 @@ The handbook should remain:
 - based on verified technical knowledge.
 
 The objective is quality rather than quantity.
+
+# Learning Philosophy
+
+Prefer understanding over memorization.
+
+Every concept should be:
+
+1. Understood.
+2. Implemented.
+3. Executed.
+4. Explained in your own words.
+
+If a concept cannot be explained clearly, it should be studied again before considering it complete.

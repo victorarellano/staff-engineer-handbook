@@ -1,8 +1,8 @@
 namespace Level1.BackendFoundations.Examples;
 
-public static class Q002GarbageCollection
+public static class Q006GarbageCollection
 {
-    public const string Number = "002";
+    public const string Number = "006";
     public const string Title = "Garbage Collection";
 
     public static void Run()

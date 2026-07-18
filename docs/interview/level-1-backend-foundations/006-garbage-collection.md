@@ -1,4 +1,4 @@
-# 002 - How does garbage collection work in .NET?
+# 006 - How does garbage collection work in .NET?
 
 ## Question
 
@@ -32,13 +32,15 @@ streams should normally be released through `IDisposable` and `using`.
 Applications should generally not call `GC.Collect()` because the runtime is
 better positioned to decide when a collection is necessary.
 
+![006 - How does garbage collection work in .NET?](../../images/howworkgc2_.png)
+
 ## Example
 
 Source code:
 
-[Q002GarbageCollection.cs](../../src/Level1.BackendFoundations/Examples/Q002GarbageCollection.cs)
+[Q006GarbageCollection.cs](../../../src/Level1.BackendFoundations/Examples/Q006GarbageCollection.cs)
 
 Run from the repository root:
 
 ```powershell
-dotnet run --project src/Level1.BackendFoundations -- 002
+dotnet run --project src/Level1.BackendFoundations -- 006
