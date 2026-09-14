@@ -415,7 +415,7 @@ The exercise distinguishes concurrency limits from rate limits and progressively
 
 See:
 
-[`06-rate-limited-services.md`](./06-rate-limited-services.md)
+[`06-rate-limited-services.md`](./06-rate-limited-service.md)
 
 ---
 
