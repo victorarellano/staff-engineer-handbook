@@ -347,6 +347,8 @@ See:
 
 [`02-bank-account-race-condition.md`](./02-bank-account-race-condition.md)
 
+---
+
 ## Third Case: Producer-Consumer Problem
 
 The third deep dive explores how independent components coordinate when one produces work and another consumes it at a different rate.
@@ -355,7 +357,7 @@ The exercise starts with a shared `Queue<WorkItem>` to expose concurrent access,
 
 See:
 
-[`03-producer-consumer-problem.md`](./03-producer-consumer-problem.md)
+[`03-producer-consumer-problem.md`](./03-producer-consumer.md)
 
 ---
 
@@ -377,7 +379,7 @@ The exercise progressively explores:
 
 See:
 
-[`04-delivery-vehicle-resource-pool.md`](./04-delivery-vehicle-resource-pool.md)
+[`04-delivery-vehicle-resource-pool.md`](./04-resource-pool.md)
 
 ---
 
@@ -401,7 +403,7 @@ The exercise progressively explores:
 
 See:
 
-[05-bank-transfer-deadlock.md](./05-bank-transfer-deadlock.md)
+[05-bank-transfer-deadlock.md](./05-deadlock.md)
 
 ---
 
@@ -428,7 +430,6 @@ See:
 [`07-distributed-inventory.md`](./07-distributed-inventory.md)
 
 ---
-
 
 ## Repository Structure
 
