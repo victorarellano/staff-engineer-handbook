@@ -31,21 +31,21 @@ The emphasis is on reasoning about behavior and trade-offs rather than memorizin
 
 **Coverage:** ✓ Covered · ◐ Introduced / partially covered · — Not covered
 
-| Learning Goal | 01 Butcher Shop | 02 Bank Account | 03 Producer-Consumer | 04 Resource Pool  05 Deadlock | 06 Rate Limiting | 07 Distributed Inventory |
-|---|:---:|:---:|:---:|:---::---:|:---:|:---:|
-| Recognize concurrency problems in real-world scenarios | ✓ | ✓ | ✓ | ✓  ✓ | ✓ | ✓ |
-| Distinguish concurrency, parallelism, and asynchronous execution | ◐ | — | ✓ | ✓  ◐ | ✓ | ✓ |
+| Learning Goal | 01 Butcher Shop | 02 Bank Account | 03 Producer-Consumer | 04 Resource Pool | 05 Deadlock | 06 Rate Limiting | 07 Distributed Inventory |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Recognize concurrency problems in real-world scenarios | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Distinguish concurrency, parallelism, and asynchronous execution | ◐ | — | ✓ | ✓|  ◐ | ✓ | ✓ |
 | Identify shared and limited resources | ✓ | ✓ | ✓ | ✓  ✓ | ✓ | ✓ |
-| Identify critical sections and synchronization boundaries | ◐ | ✓ | ◐ | ✓  ✓ | ◐ | ✓ |
-| Understand race conditions and atomicity | — | ✓ | ◐ | ✓  ◐ | — | ✓ |
-| Coordinate multiple concurrent operations safely | ✓ | ✓ | ✓ | ✓  ✓ | ✓ | ✓ |
-| Limit concurrent access to finite resources | ✓ | — | — | ✓  — | — | — |
-| Understand blocking versus asynchronous waiting | ✓ | ◐ | ✓ | ✓  ✓ | ✓ | ✓ |
+| Identify critical sections and synchronization boundaries | ◐ | ✓ | ◐ | ✓ | ✓ | ◐ | ✓ |
+| Understand race conditions and atomicity | — | ✓ | ◐ | ✓ | ◐ | — | ✓ |
+| Coordinate multiple concurrent operations safely | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Limit concurrent access to finite resources | ✓ | — | — | ✓ | — | — | — |
+| Understand blocking versus asynchronous waiting | ✓ | ◐ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Identify and prevent deadlocks | — | — | — | —  ✓ | — | — |
-| Understand producer-consumer scenarios and backpressure | — | — | ✓ | —  — | ◐ | — |
-| Reason about cancellation, failures, and resource cleanup | ◐ | ◐ | ✓ | ✓  ✓ | ✓ | ✓ |
-| Evaluate trade-offs between synchronization mechanisms | ◐ | ◐ | ✓ | ✓  ✓ | ✓ | ✓ |
-| Extend concurrency reasoning to distributed systems | — | — | — | —  — | ◐ | ✓ |
+| Understand producer-consumer scenarios and backpressure | — | — | ✓ | — | — | ◐ | — |
+| Reason about cancellation, failures, and resource cleanup | ◐ | ◐ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Evaluate trade-offs between synchronization mechanisms | ◐ | ◐ | ✓ | ✓|  ✓ | ✓ | ✓ |
+| Extend concurrency reasoning to distributed systems | — | — | — | — | — | ◐ | ✓ |
 
 ---
 
