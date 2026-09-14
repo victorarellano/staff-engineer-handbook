@@ -141,6 +141,7 @@ dotnet run --project src/Level1.BackendFoundations -- 001
 | 4 | Cloud | Planned |
 | 5 | Architecture | Planned |
 | 6 | Staff Engineering | Planned |
+|   | Concurrency | Completed |
 
 ---
 
@@ -156,6 +157,7 @@ dotnet run --project src/Level1.BackendFoundations -- 001
 - Observability
 - .NET Runtime
 - Software Architecture
+- Concurrency
 
 ---
 
@@ -168,6 +170,7 @@ dotnet run --project src/Level1.BackendFoundations -- 001
 - Cloud
 - Distributed Systems
 - System Design
+- Concurrency
 
 ---
 
@@ -187,7 +190,18 @@ dotnet run --project src/Level1.BackendFoundations -- 001
 
 ## Deep Dives
 
-> Coming soon
+Deep technical explorations organized by engineering area.
+
+### Concurrency
+
+Concurrency fundamentals, synchronization mechanisms, coordination strategies,
+and distributed concurrency patterns explored through executable simulations.
+
+→ [Concurrency Deep Dives](docs/deep-dives/concurrency/README.md)
+
+### Other Areas
+
+Additional Deep Dive areas are planned and will be added progressively.
 
 ---
 
