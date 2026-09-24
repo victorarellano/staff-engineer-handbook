@@ -435,8 +435,6 @@ restartPolicy: OnFailure
 restartPolicy: Never
 ```
 
-> En las notas originales aparecía `OnFailer`; aquí se corrige a `OnFailure`.
-
 ------------------------------------------------------------------------
 
 ## 4.9 kubectl proxy
