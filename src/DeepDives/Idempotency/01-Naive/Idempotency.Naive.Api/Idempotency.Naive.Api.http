@@ -1,0 +1,26 @@
+@Idempotency.Api_HostAddress = http://localhost:5088
+
+### Create expense - first attempt
+
+POST {{Idempotency.Api_HostAddress}}/expenses
+Content-Type: application/json
+
+{
+  "description": "AWS",
+  "amount": 120000
+}
+
+### Create expense - second attempt
+
+POST {{Idempotency.Api_HostAddress}}/expenses
+Content-Type: application/json
+
+{
+  "description": "AWS",
+  "amount": 120000
+}
+
+### Get all expenses
+
+GET {{Idempotency.Api_HostAddress}}/expenses
+Accept: application/json

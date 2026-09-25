@@ -1,0 +1,39 @@
+@Idempotency.Api_HostAddress = http://localhost:5132
+
+### Create expense - first attempt
+
+POST {{Idempotency.Api_HostAddress}}/expenses
+Content-Type: application/json
+Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
+
+{
+  "description": "AWS",
+  "amount": 120000
+}
+
+### Create expense - retry
+
+POST {{Idempotency.Api_HostAddress}}/expenses
+Content-Type: application/json
+Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
+
+{
+  "description": "AWS",
+  "amount": 120000
+}
+
+### Create expense - retry
+
+POST {{Idempotency.Api_HostAddress}}/expenses
+Content-Type: application/json
+Idempotency-Key: 6742043b-e144-4b76-9065-8dd163d7db48
+
+{
+  "description": "AWS",
+  "amount": 120000
+}
+
+### Get all expenses
+
+GET {{Idempotency.Api_HostAddress}}/expenses
+Accept: application/json
