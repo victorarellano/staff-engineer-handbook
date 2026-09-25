@@ -199,6 +199,14 @@ and distributed concurrency patterns explored through executable simulations.
 
 → [Concurrency Deep Dives](docs/deep-dives/concurrency/README.md)
 
+### Integration
+
+Idempotency explored progressively through executable labs, from the
+initial duplicate-operation problem to in-memory coordination and
+database-enforced idempotency across multiple API instances.
+
+→ [Idempotency Deep Dive & Labs](src/DeepDives/Idempotency/README.md)
+
 ### Other Areas
 
 Additional Deep Dive areas are planned and will be added progressively.
