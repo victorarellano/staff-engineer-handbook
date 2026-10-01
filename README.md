@@ -207,6 +207,10 @@ database-enforced idempotency across multiple API instances.
 
 → [Idempotency Deep Dive & Labs](src/DeepDives/Idempotency/README.md)
 
+### Security
+Security fundamentals and protocols explored from cryptographic primitives through authentication and authorization in distributed systems.
+→ [Security Deep Dives](docs/deep-dives/security/README.md)
+
 ### Other Areas
 
 Additional Deep Dive areas are planned and will be added progressively.
