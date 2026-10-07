@@ -1,5 +1,8 @@
 # Idempotency
 
+> **Executable labs:** [`src/DeepDives/Idempotency`](../../../src/DeepDives/Idempotency/)  
+> The labs reproduce the progression from naive handling to database-enforced idempotency and Transactional Outbox.
+
 ## Problem
 
 A backend operation may complete successfully while the client never receives the response.
@@ -142,13 +145,29 @@ This illustrates a broader engineering heuristic:
 > Before introducing distributed coordination, determine whether the
 > system that owns the state can enforce the required invariant atomically.
 
+## Transactional Outbox
+
+The executable labs extend the idempotency discussion to the case where a committed database operation must eventually produce a message in an external broker.
+
+The Transactional Outbox persists the business state and the intention to publish in the same database transaction. A background worker later publishes pending messages to RabbitMQ.
+
+The lab also demonstrates two important failure scenarios:
+
+- A worker can crash after RabbitMQ accepts a message but before PostgreSQL records it as published. Retrying favors delivery over silent loss and therefore provides **at-least-once publication**, with possible duplicates.
+- Multiple workers can observe the same pending message concurrently. A temporary reservation using PostgreSQL `FOR UPDATE SKIP LOCKED` and `claimed_until` prevents simultaneous processing while allowing another worker to recover the message after the reservation expires.
+
+See the [executable Idempotency labs](../../../src/DeepDives/Idempotency/) for the complete progression, execution instructions, and reproduced scenarios.
+
 ## Topics to Explore
 
-The following topics are intentionally not covered yet:
+The following topics are intentionally left for later iterations:
 
 - Expiration and retention of idempotency keys.
 - Reusing an idempotency key with a different payload.
 - Persisting and replaying HTTP responses.
-- Idempotency across multiple transactional resources.
-- Message delivery semantics.
+- Retry backoff and poison-message handling.
+- Lease renewal and long-running message publication.
+- Large-batch Outbox processing.
+- Outbox retention and cleanup.
+- Observability of pending and failed messages.
 - Out-of-order messages.

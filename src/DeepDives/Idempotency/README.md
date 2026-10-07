@@ -4,7 +4,7 @@ These labs progressively explore the guarantees required to make backend operati
 
 They accompany:
 
-`docs/deep-dives/integration/idempotency.md`
+`docs/deep-dives/integration/idempotency/README.md`
 
 ## 01 - Naive
 

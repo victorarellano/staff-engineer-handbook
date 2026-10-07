@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level1.BackendFoundations", "src\Level1.BackendFoundations\Level1.BackendFoundations.csproj", "{E1D431BF-63AC-4489-967F-F6F3A244F80C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level1.BackendFoundations", "src\Interview\Level1.BackendFoundations\Level1.BackendFoundations.csproj", "{E1D431BF-63AC-4489-967F-F6F3A244F80C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Concurrency", "Concurrency", "{7C8D9FE1-DEAB-E4B1-63B0-7C8A6CD36D25}"
 EndProject
