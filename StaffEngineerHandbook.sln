@@ -43,6 +43,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idempotency.Database.Api", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idempotency.Database.IntegrationTests", "src\DeepDives\Idempotency\03-Database\Idempotency.Database.IntegrationTests\Idempotency.Database.IntegrationTests.csproj", "{40B1F6E8-DD52-4563-A62A-B502C2B15CA6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04-TransactionalOutbox", "04-TransactionalOutbox", "{CDD9D57B-8303-FFAB-7DF5-7495369DF8CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Idempotency.TransactionalOutbox.Api", "src\DeepDives\Idempotency\04-TransactionalOutbox\Idempotency.TransactionalOutbox.Api\Idempotency.TransactionalOutbox.Api.csproj", "{91CF0CF5-0564-4EC6-B821-DB20036E1772}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +213,18 @@ Global
 		{40B1F6E8-DD52-4563-A62A-B502C2B15CA6}.Release|x64.Build.0 = Release|Any CPU
 		{40B1F6E8-DD52-4563-A62A-B502C2B15CA6}.Release|x86.ActiveCfg = Release|Any CPU
 		{40B1F6E8-DD52-4563-A62A-B502C2B15CA6}.Release|x86.Build.0 = Release|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Debug|x64.Build.0 = Debug|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Debug|x86.Build.0 = Debug|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Release|x64.ActiveCfg = Release|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Release|x64.Build.0 = Release|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Release|x86.ActiveCfg = Release|Any CPU
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -233,5 +249,7 @@ Global
 		{42E4945D-71E0-DEF6-F6B7-C696C6DAEA07} = {F2422F96-5F3F-9D2C-AAAB-E160ECFE1589}
 		{0D92ADA0-1C86-47D5-9BB1-F1A9010D89D6} = {42E4945D-71E0-DEF6-F6B7-C696C6DAEA07}
 		{40B1F6E8-DD52-4563-A62A-B502C2B15CA6} = {42E4945D-71E0-DEF6-F6B7-C696C6DAEA07}
+		{CDD9D57B-8303-FFAB-7DF5-7495369DF8CA} = {F2422F96-5F3F-9D2C-AAAB-E160ECFE1589}
+		{91CF0CF5-0564-4EC6-B821-DB20036E1772} = {CDD9D57B-8303-FFAB-7DF5-7495369DF8CA}
 	EndGlobalSection
 EndGlobal

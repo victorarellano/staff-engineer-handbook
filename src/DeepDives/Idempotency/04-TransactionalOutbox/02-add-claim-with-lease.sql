@@ -1,0 +1,1 @@
+ALTER TABLE outbox_messages ADD COLUMN claimed_until TIMESTAMPTZ NULL;
