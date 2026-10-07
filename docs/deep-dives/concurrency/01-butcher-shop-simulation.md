@@ -1,8 +1,13 @@
 # Butcher Shop Simulation
 
+**Executable lab:**
+[`src/DeepDives/Concurrency/ButcherShopSimulation`](../../../src/DeepDives/Concurrency/ButcherShopSimulation/)
+
 ## 1. Problem Context
 
-A butcher shop has a limited service capacity: several customers may arrive and wait at the same time, but only a fixed number can be served concurrently.
+A butcher shop has a limited service capacity: several customers may
+arrive and wait at the same time, but only a fixed number can be served
+concurrently.
 
 The simulation models a working day with the following rules:
 
@@ -10,11 +15,13 @@ The simulation models a working day with the following rules:
 -   There is a lunch break during which arriving customers are rejected.
 -   Customers arriving outside working hours are rejected.
 -   Customers arrive progressively during the simulation.
--   Service duration varies between configured minimum and maximum values.
+-   Service duration varies between configured minimum and maximum
+    values.
 -   The number of butchers defines the maximum service capacity.
 -   Waiting, service, and rejection statistics are collected.
 
-The scenario is intentionally simple. Its purpose is to make concurrency behavior visible through a familiar real-world problem.
+The scenario is intentionally simple. Its purpose is to make concurrency
+behavior visible through a familiar real-world problem.
 
 ------------------------------------------------------------------------
 
@@ -22,7 +29,9 @@ The scenario is intentionally simple. Its purpose is to make concurrency behavio
 
 The business rule is simple:
 
-> The shop can have many customers waiting, but it can only serve as many customers simultaneously as its available service capacity allows.
+> The shop can have many customers waiting, but it can only serve as
+> many customers simultaneously as its available service capacity
+> allows.
 
 This creates a concurrency problem:
 
@@ -43,15 +52,18 @@ Customer 3 ──► must wait
 Customer 4 ──► must wait
 ```
 
-The system therefore needs to guarantee that no more than two customer service operations execute simultaneously.
+The system therefore needs to guarantee that no more than two customer
+service operations execute simultaneously.
 
-This requirement is different from deciding which customer should be served first. Capacity control and queue ordering are separate concerns.
+This requirement is different from deciding which customer should be
+served first. Capacity control and queue ordering are separate concerns.
 
 ------------------------------------------------------------------------
 
 ## 3. Main Components
 
-The implementation separates orchestration, service coordination, customer service, and statistics.
+The implementation separates orchestration, service coordination,
+customer service, and statistics.
 
 ``` text
 Program
@@ -82,7 +94,8 @@ Statistics
 
 The application runs as a .NET `BackgroundService`.
 
-The worker starts the simulation, waits for it to finish, and prints the final statistics.
+The worker starts the simulation, waits for it to finish, and prints the
+final statistics.
 
 ### `Simulation`
 
@@ -96,7 +109,8 @@ For every ticket it:
 4.  Rejects invalid arrivals.
 5.  Creates a `Customer` for accepted arrivals.
 6.  starts a service operation for that customer.
-7.  waits for a configurable interval before generating the next arrival.
+7.  waits for a configurable interval before generating the next
+    arrival.
 
 The resulting service tasks are collected and finally awaited with:
 
@@ -127,7 +141,8 @@ Receives service
 Finishes
 ```
 
-That does **not** mean that one .NET thread must remain dedicated to that customer for the entire operation.
+That does **not** mean that one .NET thread must remain dedicated to
+that customer for the entire operation.
 
 A `Task` represents asynchronous work and its eventual completion.
 
@@ -141,15 +156,18 @@ Task / asynchronous operation
 Dedicated thread
 ```
 
-An asynchronous operation can be waiting without keeping a thread blocked for the entire waiting period.
+An asynchronous operation can be waiting without keeping a thread
+blocked for the entire waiting period.
 
-This distinction becomes visible when the customer waits for service capacity.
+This distinction becomes visible when the customer waits for service
+capacity.
 
 ------------------------------------------------------------------------
 
 ## 5. Representing Limited Service Capacity
 
-The implementation uses `SemaphoreSlim` to represent the number of customer service operations that may execute concurrently.
+The implementation uses `SemaphoreSlim` to represent the number of
+customer service operations that may execute concurrently.
 
 Conceptually, if there are three butchers:
 
@@ -218,7 +236,8 @@ finally
 
 The important point is:
 
-> The customer operation waits, but the thread that was executing it does not need to remain blocked while that wait occurs.
+> The customer operation waits, but the thread that was executing it
+> does not need to remain blocked while that wait occurs.
 
 Suppose Customer 3 arrives when all service capacity is occupied.
 
@@ -241,7 +260,8 @@ ServeCustomerAsync is suspended here
 
 The code after the `await` is **not** executed.
 
-What becomes available is the thread, not the remainder of the customer operation.
+What becomes available is the thread, not the remainder of the customer
+operation.
 
 Later, another customer finishes:
 
@@ -271,7 +291,8 @@ A thread executes the code
 after the await
 ```
 
-The thread executing the continuation does not necessarily have to be the same thread that originally reached the `await`.
+The thread executing the continuation does not necessarily have to be
+the same thread that originally reached the `await`.
 
 Conceptually:
 
@@ -430,7 +451,8 @@ Release capacity
 
 Using `finally` is important.
 
-Once capacity has been acquired, it must be released even if service fails or cancellation occurs after acquisition.
+Once capacity has been acquired, it must be released even if service
+fails or cancellation occurs after acquisition.
 
 This expresses a general principle:
 
@@ -440,7 +462,8 @@ This expresses a general principle:
 
 ## 9. Measuring Contention
 
-Before waiting for service capacity, the implementation starts a `Stopwatch`.
+Before waiting for service capacity, the implementation starts a
+`Stopwatch`.
 
 ``` csharp
 var stopwatch = Stopwatch.StartNew();
@@ -448,9 +471,11 @@ var stopwatch = Stopwatch.StartNew();
 await _serviceCapacity.WaitAsync(cancellationToken);
 ```
 
-When the wait completes, the elapsed time indicates how long the customer waited before service capacity became available.
+When the wait completes, the elapsed time indicates how long the
+customer waited before service capacity became available.
 
-The current implementation records the wait when it exceeds a small threshold.
+The current implementation records the wait when it exceeds a small
+threshold.
 
 This makes contention observable.
 
@@ -469,7 +494,8 @@ More operations wait
 Waiting time increases
 ```
 
-Concurrency is therefore not only visible in the code; its effects can also be measured.
+Concurrency is therefore not only visible in the code; its effects can
+also be measured.
 
 ------------------------------------------------------------------------
 
@@ -533,7 +559,8 @@ lock (_serviceTimes)
 }
 ```
 
-Here the requirement is mutual exclusion while modifying shared mutable state.
+Here the requirement is mutual exclusion while modifying shared mutable
+state.
 
 ### Atomic counters with `Interlocked`
 
@@ -549,7 +576,8 @@ and:
 Interlocked.Increment(ref _rejectedCustomers);
 ```
 
-The required operation is only an atomic increment, so a larger critical section is unnecessary.
+The required operation is only an atomic increment, so a larger critical
+section is unnecessary.
 
 This gives three different mechanisms in the same exercise:
 
@@ -585,13 +613,15 @@ and customer service:
 await Task.Delay(serviceTime, cancellationToken);
 ```
 
-Therefore, an operation that is waiting does not have to remain pending indefinitely when application shutdown or cancellation is requested.
+Therefore, an operation that is waiting does not have to remain pending
+indefinitely when application shutdown or cancellation is requested.
 
 ------------------------------------------------------------------------
 
 ## 13. Capacity Control Is Not FIFO Ordering
 
-Customers receive sequential ticket numbers, but the current design should not be interpreted as an explicit FIFO queue.
+Customers receive sequential ticket numbers, but the current design
+should not be interpreted as an explicit FIFO queue.
 
 The semaphore guarantees:
 
@@ -623,7 +653,8 @@ How many can be served?
         └── concurrency policy
 ```
 
-If strict FIFO becomes a requirement, it should be modeled explicitly rather than assumed from the semaphore.
+If strict FIFO becomes a requirement, it should be modeled explicitly
+rather than assumed from the semaphore.
 
 ------------------------------------------------------------------------
 
@@ -638,9 +669,11 @@ However, after acquiring service capacity, it currently selects:
 var butcher = _butchers.First();
 ```
 
-Therefore, the semaphore correctly models aggregate service capacity, but individual butcher allocation is not currently modeled.
+Therefore, the semaphore correctly models aggregate service capacity,
+but individual butcher allocation is not currently modeled.
 
-Several concurrent service operations may invoke `AttendAsync` on the same `Butcher` instance.
+Several concurrent service operations may invoke `AttendAsync` on the
+same `Butcher` instance.
 
 Conceptually:
 
@@ -654,9 +687,11 @@ Individual available butcher
         └── not explicitly allocated
 ```
 
-This is an implementation limitation and also a useful next design problem.
+This is an implementation limitation and also a useful next design
+problem.
 
-A future version could coordinate actual available butcher instances instead of representing only aggregate capacity.
+A future version could coordinate actual available butcher instances
+instead of representing only aggregate capacity.
 
 ------------------------------------------------------------------------
 
@@ -664,7 +699,8 @@ A future version could coordinate actual available butcher instances instead of 
 
 The exercise is not primarily about learning the `SemaphoreSlim` API.
 
-It demonstrates how to move from a real-world constraint to a concurrency model.
+It demonstrates how to move from a real-world constraint to a
+concurrency model.
 
 ``` text
 Business constraint
@@ -687,7 +723,8 @@ Synchronization strategy
 SemaphoreSlim
 ```
 
-It also demonstrates that a single application may contain several independent concurrency concerns:
+It also demonstrates that a single application may contain several
+independent concurrency concerns:
 
 ``` text
 Service capacity
@@ -780,19 +817,22 @@ Interlocked   → atomic counters
 
 ### 7. Resource acquisition requires guaranteed release
 
-The semaphore permit is released in `finally` so that failures do not permanently reduce available capacity.
+The semaphore permit is released in `finally` so that failures do not
+permanently reduce available capacity.
 
 ------------------------------------------------------------------------
 
 ### 8. Capacity and ordering are separate concerns
 
-A semaphore limits how many operations execute concurrently. It should not be treated as the business queue itself.
+A semaphore limits how many operations execute concurrently. It should
+not be treated as the business queue itself.
 
 ------------------------------------------------------------------------
 
 ## 17. Experiments
 
-The simulation can be modified to make different concurrency behaviors visible.
+The simulation can be modified to make different concurrency behaviors
+visible.
 
 ### Experiment 1 --- Change Service Capacity
 
@@ -855,7 +895,8 @@ Observe the effect of the propagated `CancellationToken`.
 
 ### Experiment 6 --- Compare `Wait` and `WaitAsync`
 
-As a controlled learning experiment, compare the conceptual and runtime implications of:
+As a controlled learning experiment, compare the conceptual and runtime
+implications of:
 
 ``` csharp
 _serviceCapacity.Wait(cancellationToken);
@@ -867,13 +908,16 @@ with:
 await _serviceCapacity.WaitAsync(cancellationToken);
 ```
 
-The important observation is not whether the customer waits --- it waits in both cases --- but whether a thread must remain blocked during that wait.
+The important observation is not whether the customer waits --- it waits
+in both cases --- but whether a thread must remain blocked during that
+wait.
 
 ------------------------------------------------------------------------
 
 ## 18. Possible Evolution
 
-The current solution can be extended progressively to introduce new concurrency problems.
+The current solution can be extended progressively to introduce new
+concurrency problems.
 
 Possible next steps include:
 
@@ -925,4 +969,5 @@ Choose the coordination mechanism
 Implement and observe the behavior
 ```
 
-The synchronization primitive is the consequence of the reasoning, not the starting point.
+The synchronization primitive is the consequence of the reasoning, not
+the starting point.

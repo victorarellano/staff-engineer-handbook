@@ -315,7 +315,7 @@ The implementation uses .NET asynchronous programming and SemaphoreSlim as the i
 
 See:
 
-[butcher shop simulation](./01-butcher-shop-simulation.md)
+[butcher shop simulation](./01-butcher-shop-simulation.md) · [Executable lab](../../../src/DeepDives/Concurrency/ButcherShopSimulation/)
 
 ---
 
@@ -345,7 +345,7 @@ The main objective is to understand how to identify the complete state transitio
 
 See:
 
-[`02-bank-account-race-condition.md`](./02-bank-account-race-condition.md)
+[`02-bank-account-race-condition.md`](./02-bank-account-race-condition.md) · [Executable lab](../../../src/DeepDives/Concurrency/BankAccountRaceConditionSimulation/)
 
 ---
 
@@ -357,7 +357,7 @@ The exercise starts with a shared `Queue<WorkItem>` to expose concurrent access,
 
 See:
 
-[`03-producer-consumer-problem.md`](./03-producer-consumer.md)
+[`03-producer-consumer-problem.md`](./03-producer-consumer.md) · [Executable lab](../../../src/DeepDives/Concurrency/ProducerConsumerSimulation/)
 
 ---
 
@@ -379,7 +379,7 @@ The exercise progressively explores:
 
 See:
 
-[`04-delivery-vehicle-resource-pool.md`](./04-resource-pool.md)
+[`04-delivery-vehicle-resource-pool.md`](./04-resource-pool.md) · [Executable lab](../../../src/DeepDives/Concurrency/DeliveryVehiclePoolSimulation/)
 
 ---
 
@@ -403,7 +403,7 @@ The exercise progressively explores:
 
 See:
 
-[05-bank-transfer-deadlock.md](./05-deadlock.md)
+[05-bank-transfer-deadlock.md](./05-deadlock.md) · [Executable lab](../../../src/DeepDives/Concurrency/BankTransferDeadlockSimulation/)
 
 ---
 
@@ -415,7 +415,7 @@ The exercise distinguishes concurrency limits from rate limits and progressively
 
 See:
 
-[`06-rate-limited-services.md`](./06-rate-limited-service.md)
+[`06-rate-limited-services.md`](./06-rate-limited-service.md) · [Executable lab](../../../src/DeepDives/Concurrency/RateLimitedServiceSimulation/)
 
 ---
 
@@ -427,7 +427,7 @@ The exercise starts with an unsafe inventory update and progressively explores s
 
 See:
 
-[`07-distributed-inventory.md`](./07-distributed-inventory.md)
+[`07-distributed-inventory.md`](./07-distributed-inventory.md) · [Executable lab](../../../src/DeepDives/Concurrency/DistributedInventorySimulation/)
 
 ---
 
@@ -449,14 +449,15 @@ docs/
         └── 07-distributed-inventory.md        
 
 src/
-└── Concurrency/
-    ├── ButcherShopSimulation/
-    ├── BankAccountRaceConditionSimulation/
-    ├── ProducerConsumerSimulation/
-    ├── DeliveryVehiclePoolSimulation/
-    ├── BankTransferDeadlockSimulation/
-    ├── RateLimitedServiceSimulation/
-    └── DistributedInventorySimulation/    
+└── DeepDives/
+    └── Concurrency/
+        ├── ButcherShopSimulation/
+        ├── BankAccountRaceConditionSimulation/
+        ├── ProducerConsumerSimulation/
+        ├── DeliveryVehiclePoolSimulation/
+        ├── BankTransferDeadlockSimulation/
+        ├── RateLimitedServiceSimulation/
+        └── DistributedInventorySimulation/    
 ```
 
 The documentation focuses on the problem, reasoning, trade-offs, and lessons learned.

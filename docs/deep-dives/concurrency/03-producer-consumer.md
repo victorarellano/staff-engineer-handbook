@@ -1,12 +1,18 @@
 # Producer-Consumer Problem
 
+**Executable lab:**
+[`src/DeepDives/Concurrency/ProducerConsumerSimulation`](../../../src/DeepDives/Concurrency/ProducerConsumerSimulation/)
+
 ## 1. Problem Context
 
-A producer-consumer problem appears when one component generates work and another processes it independently.
+A producer-consumer problem appears when one component generates work
+and another processes it independently.
 
-In this exercise, the **Producer** creates `WorkItem` instances and the **Consumer** processes them. Both execute concurrently, and the producer can generate work faster than the consumer can process it.
+In this exercise, the **Producer** creates `WorkItem` instances and the
+**Consumer** processes them. Both execute concurrently, and the producer
+can generate work faster than the consumer can process it.
 
-```text
+``` text
              ┌─────────────────┐
 Producer ───►│   Pending Work  │───► Consumer
              └─────────────────┘
@@ -14,11 +20,12 @@ Producer ───►│   Pending Work  │───► Consumer
 
 The central question is:
 
-> How do we coordinate components that produce and consume work at different rates?
+> How do we coordinate components that produce and consume work at
+> different rates?
 
 The exercise preserves three implementations:
 
-```text
+``` text
 Queue<T>
    ↓
 Channel<T> Unbounded
@@ -26,19 +33,19 @@ Channel<T> Unbounded
 Channel<T> Bounded
 ```
 
----
+------------------------------------------------------------------------
 
-## 2. Naive Implementation with Queue<T>
+## 2. Naive Implementation with Queue`<T>`{=html}
 
 The first implementation uses a shared:
 
-```csharp
+``` csharp
 Queue<WorkItem>
 ```
 
 Both components access the same instance:
 
-```text
+``` text
 Producer ── Enqueue() ──┐
                         ▼
                  Queue<WorkItem>
@@ -52,15 +59,18 @@ This exposes four problems.
 
 ### Concurrent access
 
-`Enqueue()` and `Dequeue()` operate concurrently over the same mutable `Queue<WorkItem>`. `Queue<T>` does not provide the synchronization required for concurrent producer-consumer access.
+`Enqueue()` and `Dequeue()` operate concurrently over the same mutable
+`Queue<WorkItem>`. `Queue<T>` does not provide the synchronization
+required for concurrent producer-consumer access.
 
-A manual synchronization mechanism could protect access to the queue, but that alone would not solve the remaining coordination problems.
+A manual synchronization mechanism could protect access to the queue,
+but that alone would not solve the remaining coordination problems.
 
 ### Polling
 
 When no item exists, the consumer repeatedly checks the queue:
 
-```text
+``` text
 check queue
     ↓
 empty
@@ -72,13 +82,15 @@ check again
 ...
 ```
 
-The consumer has no mechanism to wait specifically for new work to arrive.
+The consumer has no mechanism to wait specifically for new work to
+arrive.
 
 ### No completion signal
 
-The producer finishes after generating `ItemCount` elements, but the consumer does not know that production has finished:
+The producer finishes after generating `ItemCount` elements, but the
+consumer does not know that production has finished:
 
-```text
+``` text
 Producer finishes
        ↓
 Consumer processes remaining items
@@ -92,23 +104,27 @@ For this naive scenario, external cancellation (`Ctrl+C`) is required.
 
 ### Unbounded growth
 
-If the producer remains faster than the consumer, pending work accumulates:
+If the producer remains faster than the consumer, pending work
+accumulates:
 
-```text
+``` text
 Producer ───► [1][2][3][4][5][6][7][8]... ───► Consumer
 ```
 
 There is no configured maximum for pending work.
 
----
+------------------------------------------------------------------------
 
-## 3. Introducing Channel<T>
+## 3. Introducing Channel`<T>`{=html}
 
-The problem requires more than a shared collection. Producer and consumer need a communication mechanism capable of coordinating their different execution rates.
+The problem requires more than a shared collection. Producer and
+consumer need a communication mechanism capable of coordinating their
+different execution rates.
 
-.NET provides `Channel<T>` for asynchronous producer-consumer communication.
+.NET provides `Channel<T>` for asynchronous producer-consumer
+communication.
 
-```text
+``` text
 Producer
    │
    │ ChannelWriter<T>
@@ -124,13 +140,13 @@ Consumer
 
 The producer writes with:
 
-```csharp
+``` csharp
 await writer.WriteAsync(item, cancellationToken);
 ```
 
 The consumer can read asynchronously:
 
-```csharp
+``` csharp
 await foreach (
     var item in reader.ReadAllAsync(cancellationToken))
 {
@@ -138,50 +154,53 @@ await foreach (
 }
 ```
 
-If no item is available, the consumer can wait asynchronously instead of polling.
+If no item is available, the consumer can wait asynchronously instead of
+polling.
 
 The producer can also signal that no more work will arrive:
 
-```csharp
+``` csharp
 writer.TryComplete();
 ```
 
-The consumer then processes any buffered items and terminates naturally when the channel is empty.
+The consumer then processes any buffered items and terminates naturally
+when the channel is empty.
 
----
+------------------------------------------------------------------------
 
 ## 4. Unbounded Channel
 
 The second implementation uses:
 
-```csharp
+``` csharp
 Channel.CreateUnbounded<WorkItem>()
 ```
 
 It introduces:
 
-- coordinated concurrent communication;
-- asynchronous waiting for work;
-- explicit production completion;
-- natural consumer termination.
+-   coordinated concurrent communication;
+-   asynchronous waiting for work;
+-   explicit production completion;
+-   natural consumer termination.
 
 However, it has no configured capacity limit:
 
-```text
+``` text
 Producer ───► [1][2][3][4][5][6][7][8]... ───► Consumer
                          ↑
                   can keep growing
 ```
 
-If production continuously exceeds consumption, pending work can still accumulate.
+If production continuously exceeds consumption, pending work can still
+accumulate.
 
----
+------------------------------------------------------------------------
 
 ## 5. Bounded Channel and Backpressure
 
 The third implementation creates a channel with a maximum capacity:
 
-```csharp
+``` csharp
 var channel = Channel.CreateBounded<WorkItem>(
     new BoundedChannelOptions(_settings.ChannelCapacity)
     {
@@ -193,24 +212,26 @@ var channel = Channel.CreateBounded<WorkItem>(
 
 For example:
 
-```text
+``` text
 ChannelCapacity = 5
 
 [1][2][3][4][5]
          FULL
 ```
 
-`SingleWriter` and `SingleReader` describe this simulation: one producer and one consumer.
+`SingleWriter` and `SingleReader` describe this simulation: one producer
+and one consumer.
 
 The key setting is:
 
-```csharp
+``` csharp
 FullMode = BoundedChannelFullMode.Wait
 ```
 
-When the channel is full, another `WriteAsync()` cannot complete until capacity becomes available:
+When the channel is full, another `WriteAsync()` cannot complete until
+capacity becomes available:
 
-```text
+``` text
 Producer attempts new item
           ↓
 Channel is full
@@ -226,17 +247,20 @@ WriteAsync completes
 Producer continues
 ```
 
-This propagation of downstream saturation toward the producer is **backpressure**.
+This propagation of downstream saturation toward the producer is
+**backpressure**.
 
-The producer is slowed when the consumer cannot keep up, preventing pending work from growing without limit.
+The producer is slowed when the consumer cannot keep up, preventing
+pending work from growing without limit.
 
----
+------------------------------------------------------------------------
 
 ## 6. Observing Backpressure
 
-The bounded implementation measures the time spent waiting in `WriteAsync()`:
+The bounded implementation measures the time spent waiting in
+`WriteAsync()`:
 
-```csharp
+``` csharp
 var stopwatch = Stopwatch.StartNew();
 
 await writer.WriteAsync(item, cancellationToken);
@@ -252,11 +276,13 @@ if (stopwatch.ElapsedMilliseconds > 50)
 }
 ```
 
-During the experiment, the producer generated an item approximately every `100 ms`, while the consumer required approximately `1000 ms` to process one.
+During the experiment, the producer generated an item approximately
+every `100 ms`, while the consumer required approximately `1000 ms` to
+process one.
 
 Once the channel became full, the execution showed:
 
-```text
+``` text
 BACKPRESSURE: WorkItem 15 waited 902 ms for channel capacity
 Produced WorkItem 15
 Attempting to produce WorkItem 16
@@ -270,19 +296,23 @@ Produced WorkItem 16
 
 Subsequent waits were approximately `895–900 ms`.
 
-Once the buffer is saturated, the producer can only continue when the consumer frees capacity.
+Once the buffer is saturated, the producer can only continue when the
+consumer frees capacity.
 
-The wait is asynchronous: the producer method is suspended at `await writer.WriteAsync(...)`; a thread does not need to remain blocked for the entire waiting period.
+The wait is asynchronous: the producer method is suspended at
+`await writer.WriteAsync(...)`; a thread does not need to remain blocked
+for the entire waiting period.
 
----
+------------------------------------------------------------------------
 
 ## 7. Simulation and Application Lifecycle
 
 `Simulation` remains the orchestrator.
 
-For the bounded scenario it creates the channel and provides its endpoints to producer and consumer:
+For the bounded scenario it creates the channel and provides its
+endpoints to producer and consumer:
 
-```text
+``` text
 Simulation
     │
     ├── ChannelWriter<WorkItem> ──► Producer
@@ -292,13 +322,13 @@ Simulation
 
 Both operations execute concurrently and `Simulation` waits for both:
 
-```csharp
+``` csharp
 await Task.WhenAll(producerTask, consumerTask);
 ```
 
 When production finishes:
 
-```text
+``` text
 Producer finishes
       ↓
 Writer.TryComplete()
@@ -314,21 +344,29 @@ Simulation finishes
 Host shutdown
 ```
 
-Unlike the naive implementation, the channel-based scenarios therefore have a natural completion mechanism.
+Unlike the naive implementation, the channel-based scenarios therefore
+have a natural completion mechanism.
 
----
+------------------------------------------------------------------------
 
 ## 8. Comparison
 
-| Implementation | Concurrent coordination | Async waiting | Completion signal | Capacity limit | Backpressure |
-|---|:---:|:---:|:---:|:---:|:---:|
-| Naive `Queue<T>` | No | No | No | No | No |
-| Unbounded `Channel<T>` | Yes | Yes | Yes | No | No |
-| Bounded `Channel<T>` | Yes | Yes | Yes | Yes | Yes |
+  -------------------------------------------------------------------------------------
+  Implementation     Concurrent      Async      Completion    Capacity    Backpressure
+                    coordination    waiting       signal       limit     
+  ---------------- -------------- ------------ ------------ ------------ --------------
+  Naive `Queue<T>`       No            No           No           No            No
+
+  Unbounded             Yes           Yes          Yes           No            No
+  `Channel<T>`                                                           
+
+  Bounded               Yes           Yes          Yes          Yes           Yes
+  `Channel<T>`                                                           
+  -------------------------------------------------------------------------------------
 
 The progression is:
 
-```text
+``` text
 Queue<T>
    ↓
 reveals coordination problems
@@ -342,17 +380,21 @@ Channel<T> Bounded
 adds capacity control and backpressure
 ```
 
----
+------------------------------------------------------------------------
 
 ## 9. Conclusion
 
 The main lesson is not simply to replace `Queue<T>` with `Channel<T>`.
 
-The exercise demonstrates how to recognize four concerns in a producer-consumer problem:
+The exercise demonstrates how to recognize four concerns in a
+producer-consumer problem:
 
-1. coordinating concurrent producers and consumers;
-2. waiting efficiently when no work is available;
-3. signaling when production has finished;
-4. controlling accumulation when production exceeds consumption.
+1.  coordinating concurrent producers and consumers;
+2.  waiting efficiently when no work is available;
+3.  signaling when production has finished;
+4.  controlling accumulation when production exceeds consumption.
 
-An unbounded `Channel<T>` solves coordination, asynchronous waiting, and completion. A bounded channel additionally limits pending work and, with `BoundedChannelFullMode.Wait`, applies backpressure when the consumer cannot keep up.
+An unbounded `Channel<T>` solves coordination, asynchronous waiting, and
+completion. A bounded channel additionally limits pending work and, with
+`BoundedChannelFullMode.Wait`, applies backpressure when the consumer
+cannot keep up.

@@ -1,12 +1,17 @@
 # Delivery Vehicle Resource Pool
 
+**Executable lab:**
+[`src/DeepDives/Concurrency/DeliveryVehiclePoolSimulation`](../../../src/DeepDives/Concurrency/DeliveryVehiclePoolSimulation/)
+
 ## 1. Problem Context
 
-A resource pool appears when multiple concurrent operations need temporary access to a finite set of reusable resources.
+A resource pool appears when multiple concurrent operations need
+temporary access to a finite set of reusable resources.
 
-In this exercise, several **Delivery** operations compete for a small number of concrete **Vehicle** instances.
+In this exercise, several **Delivery** operations compete for a small
+number of concrete **Vehicle** instances.
 
-```text
+``` text
 Delivery 1 ──┐
 Delivery 2 ──┼──► Vehicle Pool ──► [Van #1][Van #2][Van #3]
 Delivery 3 ──┤
@@ -15,13 +20,15 @@ Delivery 4 ──┘
 
 The central question is:
 
-> How do we safely manage a finite set of reusable resources among multiple concurrent operations?
+> How do we safely manage a finite set of reusable resources among
+> multiple concurrent operations?
 
-Unlike a simple concurrency limit, each successful acquisition must return a specific resource that is later returned to the pool.
+Unlike a simple concurrency limit, each successful acquisition must
+return a specific resource that is later returned to the pool.
 
 The exercise evolves through these concerns:
 
-```text
+``` text
 Naive shared pool
       ↓
 Safe pool state
@@ -35,19 +42,19 @@ Acquisition timeout
 Pool state consistency
 ```
 
----
+------------------------------------------------------------------------
 
 ## 2. Naive Resource Pool
 
 The first implementation stores the available vehicles in a shared:
 
-```csharp
+``` csharp
 List<Vehicle>
 ```
 
 Acquisition performs three logical steps:
 
-```text
+``` text
 CHECK availability
         ↓
 SELECT vehicle
@@ -57,7 +64,7 @@ REMOVE vehicle
 
 A simplified implementation is:
 
-```csharp
+``` csharp
 public Vehicle? Acquire()
 {
     if (_availableVehicles.Count == 0)
@@ -79,18 +86,21 @@ The availability check and removal are not a single atomic operation.
 
 Several deliveries can observe the same previous state:
 
-```text
+``` text
 Delivery 1 ── CHECK ───────────── REMOVE
 Delivery 2 ───── CHECK ────────── REMOVE
 Delivery 3 ───────── CHECK ────── REMOVE
 Delivery 4 ───────────── CHECK ── REMOVE
 ```
 
-To make the race observable, the simulation intentionally introduced a delay between checking availability and removing a vehicle.
+To make the race observable, the simulation intentionally introduced a
+delay between checking availability and removing a vehicle.
 
-With three vehicles, four or more deliveries could all observe that the pool was non-empty before any of them completed the removal. Once the first three vehicles were removed, another delivery could still attempt:
+With three vehicles, four or more deliveries could all observe that the
+pool was non-empty before any of them completed the removal. Once the
+first three vehicles were removed, another delivery could still attempt:
 
-```csharp
+``` csharp
 _availableVehicles[0]
 ```
 
@@ -98,19 +108,21 @@ against an empty list.
 
 The experiment reproduced the resulting invalid access.
 
-The important observation is that the critical operation is not only `RemoveAt(0)`. The complete state transition is:
+The important observation is that the critical operation is not only
+`RemoveAt(0)`. The complete state transition is:
 
-```text
+``` text
 CHECK → SELECT → REMOVE
 ```
 
----
+------------------------------------------------------------------------
 
 ## 3. Protecting the Pool State
 
-The first correction protects the shared collection with a common `lock`.
+The first correction protects the shared collection with a common
+`lock`.
 
-```csharp
+``` csharp
 private readonly object _sync = new();
 
 public Vehicle? Acquire()
@@ -137,24 +149,27 @@ public void Release(Vehicle vehicle)
 }
 ```
 
-Now only one operation at a time can execute the acquisition transition over the collection:
+Now only one operation at a time can execute the acquisition transition
+over the collection:
 
-```text
+``` text
 Delivery A ──► lock ──► CHECK → SELECT → REMOVE ──► unlock
 Delivery B ─────────────── waits ─────────────────►
 ```
 
-`Release()` uses the same synchronization strategy because it modifies the same shared state.
+`Release()` uses the same synchronization strategy because it modifies
+the same shared state.
 
 This removes the race condition, but it exposes a different problem.
 
----
+------------------------------------------------------------------------
 
 ## 4. Losing the Opportunity to Acquire a Vehicle
 
-With three vehicles and ten deliveries, the first three can acquire a vehicle:
+With three vehicles and ten deliveries, the first three can acquire a
+vehicle:
 
-```text
+``` text
 Delivery 1 → Van #1
 Delivery 2 → Van #2
 Delivery 3 → Van #3
@@ -162,7 +177,7 @@ Delivery 3 → Van #3
 
 The remaining deliveries find an empty pool:
 
-```text
+``` text
 Delivery 4 → no vehicle → returns
 Delivery 5 → no vehicle → returns
 ...
@@ -170,13 +185,14 @@ Delivery 5 → no vehicle → returns
 
 Later, the first deliveries return their vehicles:
 
-```text
+``` text
 Delivery 1 → Release Van #1
 Delivery 2 → Release Van #2
 Delivery 3 → Release Van #3
 ```
 
-However, the deliveries that previously failed have already lost their opportunity.
+However, the deliveries that previously failed have already lost their
+opportunity.
 
 Protecting the collection therefore solves:
 
@@ -186,24 +202,26 @@ It does not solve:
 
 > Waiting until a temporarily unavailable resource is returned.
 
-For this scenario, an empty pool should cause a delivery to wait rather than fail immediately.
+For this scenario, an empty pool should cause a delivery to wait rather
+than fail immediately.
 
----
+------------------------------------------------------------------------
 
 ## 5. Asynchronous Resource Waiting with SemaphoreSlim
 
-The pool introduces a `SemaphoreSlim` whose count represents the number of vehicles currently available.
+The pool introduces a `SemaphoreSlim` whose count represents the number
+of vehicles currently available.
 
 With three vehicles:
 
-```text
+``` text
 Available vehicles = 3
 Semaphore permits  = 3
 ```
 
 Acquisition begins with:
 
-```csharp
+``` csharp
 await _availability.WaitAsync(cancellationToken);
 ```
 
@@ -211,7 +229,7 @@ When all vehicles are in use, the semaphore count reaches zero.
 
 Additional deliveries wait asynchronously:
 
-```text
+``` text
 Delivery 1 → Van #1
 Delivery 2 → Van #2
 Delivery 3 → Van #3
@@ -223,7 +241,7 @@ Delivery 6 → WaitAsync()
 
 When a vehicle is returned:
 
-```csharp
+``` csharp
 _availability.Release();
 ```
 
@@ -231,7 +249,7 @@ one pending acquisition can continue.
 
 The pool now combines two responsibilities:
 
-```text
+``` text
 SemaphoreSlim
       ↓
 coordinates availability
@@ -251,7 +269,7 @@ The collection answers:
 
 A representative implementation is:
 
-```csharp
+``` csharp
 public async Task<Vehicle> AcquireAsync(
     CancellationToken cancellationToken)
 {
@@ -280,31 +298,36 @@ public void Release(Vehicle vehicle)
 
 The release order is intentional:
 
-```text
+``` text
 add concrete vehicle to pool
             ↓
 announce availability
 ```
 
-The pool must not announce availability before the resource has actually been returned.
+The pool must not announce availability before the resource has actually
+been returned.
 
 ### Observed behavior
 
-With three vehicles and ten deliveries, the execution showed the remaining deliveries waiting rather than disappearing.
+With three vehicles and ten deliveries, the execution showed the
+remaining deliveries waiting rather than disappearing.
 
-As vehicles were returned, pending deliveries acquired them and continued.
+As vehicles were returned, pending deliveries acquired them and
+continued.
 
-The exact continuation order was not sequential. For example, deliveries `4`, `6`, and `5` resumed in that order.
+The exact continuation order was not sequential. For example, deliveries
+`4`, `6`, and `5` resumed in that order.
 
-This reinforces that concurrent task scheduling should not be used as an ordering mechanism.
+This reinforces that concurrent task scheduling should not be used as an
+ordering mechanism.
 
----
+------------------------------------------------------------------------
 
 ## 6. Resource Lifecycle and Resource Leaks
 
 A pooled resource has a lifecycle:
 
-```text
+``` text
 Acquire
    ↓
 Use
@@ -312,9 +335,10 @@ Use
 Release
 ```
 
-A new problem appears if the work fails after acquisition but before release:
+A new problem appears if the work fails after acquisition but before
+release:
 
-```text
+``` text
 Delivery
    ↓
 Acquire Van #2
@@ -324,11 +348,12 @@ processing
 EXCEPTION
 ```
 
-If `Van #2` is never returned, the resource still exists but is no longer available through the pool.
+If `Van #2` is never returned, the resource still exists but is no
+longer available through the pool.
 
 This is a **resource leak**.
 
-```text
+``` text
 Initial effective capacity: 3
 
 one leaked vehicle
@@ -344,7 +369,7 @@ Repeated leaks can eventually exhaust the pool.
 
 The release therefore has to be guaranteed even when the delivery fails:
 
-```csharp
+``` csharp
 var vehicle = await pool.AcquireAsync(cancellationToken);
 
 try
@@ -359,17 +384,19 @@ finally
 
 The important guarantee is:
 
-> Once a resource has been successfully acquired, its release must occur even if the operation using it fails.
+> Once a resource has been successfully acquired, its release must occur
+> even if the operation using it fails.
 
----
+------------------------------------------------------------------------
 
 ## 7. Pool Exhaustion and Acquisition Timeout
 
-Waiting asynchronously avoids losing deliveries when the pool is temporarily empty, but waiting indefinitely is not always desirable.
+Waiting asynchronously avoids losing deliveries when the pool is
+temporarily empty, but waiting indefinitely is not always desirable.
 
 The pool can apply an acquisition timeout:
 
-```csharp
+``` csharp
 var acquired = await _availability.WaitAsync(
     timeoutMilliseconds,
     cancellationToken);
@@ -380,7 +407,7 @@ if (!acquired)
 
 The acquisition can now finish in three ways:
 
-```text
+``` text
 AcquireAsync
      │
      ├── resource becomes available
@@ -406,19 +433,23 @@ Cancellation means:
 
 > The operation itself should no longer continue.
 
-For example, if deliveries use vehicles for `5000 ms` but acquisition waits only `2000 ms`, pending deliveries can time out before a vehicle is returned.
+For example, if deliveries use vehicles for `5000 ms` but acquisition
+waits only `2000 ms`, pending deliveries can time out before a vehicle
+is returned.
 
-This is not necessarily a pool failure. It is the result of temporary pool exhaustion combined with the caller's waiting policy.
+This is not necessarily a pool failure. It is the result of temporary
+pool exhaustion combined with the caller's waiting policy.
 
----
+------------------------------------------------------------------------
 
 ## 8. Keeping Semaphore and Resource State Consistent
 
-The semaphore count and the available-resource collection represent related views of the pool state.
+The semaphore count and the available-resource collection represent
+related views of the pool state.
 
 Conceptually:
 
-```text
+``` text
 Semaphore permits
         ↕
 available vehicles
@@ -426,9 +457,10 @@ available vehicles
 
 After `WaitAsync()` succeeds, one permit has already been consumed.
 
-If an exception occurs before the vehicle is successfully removed from the collection, the permit must be restored:
+If an exception occurs before the vehicle is successfully removed from
+the collection, the permit must be restored:
 
-```csharp
+``` csharp
 public async Task<Vehicle?> AcquireAsync(
     int timeoutMilliseconds,
     CancellationToken cancellationToken)
@@ -461,34 +493,36 @@ public async Task<Vehicle?> AcquireAsync(
 
 Otherwise the pool could become inconsistent:
 
-```text
+``` text
 Semaphore count          = 2
 AvailableVehicles.Count  = 3
 ```
 
 The central invariant is:
 
-> Every consumed permit must correspond to a resource that was actually acquired.
+> Every consumed permit must correspond to a resource that was actually
+> acquired.
 
 And during release:
 
-> Every semaphore release must correspond to a resource that was actually returned.
+> Every semaphore release must correspond to a resource that was
+> actually returned.
 
 This is why the normal release sequence remains:
 
-```text
+``` text
 add resource
     ↓
 Semaphore.Release()
 ```
 
----
+------------------------------------------------------------------------
 
 ## 9. Final Resource Pool Model
 
 The completed model combines several guarantees:
 
-```text
+``` text
 Delivery
    │
    ▼
@@ -518,34 +552,53 @@ AcquireAsync
 
 Each mechanism has a distinct responsibility.
 
-| Concern | Mechanism |
-|---|---|
-| Protect the shared vehicle collection | `lock` |
-| Wait until capacity becomes available | `SemaphoreSlim.WaitAsync()` |
-| Represent the concrete reusable resources | `List<Vehicle>` |
-| Guarantee resource return after acquisition | `try/finally` |
-| Bound how long acquisition may wait | `WaitAsync(timeout, cancellationToken)` |
-| Preserve internal pool consistency | Restore permits when acquisition cannot complete |
+  -----------------------------------------------------------------------------
+  Concern                             Mechanism
+  ----------------------------------- -----------------------------------------
+  Protect the shared vehicle          `lock`
+  collection                          
 
----
+  Wait until capacity becomes         `SemaphoreSlim.WaitAsync()`
+  available                           
+
+  Represent the concrete reusable     `List<Vehicle>`
+  resources                           
+
+  Guarantee resource return after     `try/finally`
+  acquisition                         
+
+  Bound how long acquisition may wait `WaitAsync(timeout, cancellationToken)`
+
+  Preserve internal pool consistency  Restore permits when acquisition cannot
+                                      complete
+  -----------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 
 ## 10. Conclusion
 
-The main lesson of the exercise is that a resource pool is more than a concurrency limit.
+The main lesson of the exercise is that a resource pool is more than a
+concurrency limit.
 
-A pool must coordinate access to a finite set of **concrete reusable resources** and preserve their lifecycle:
+A pool must coordinate access to a finite set of **concrete reusable
+resources** and preserve their lifecycle:
 
-```text
+``` text
 Acquire → Use → Release
 ```
 
-The exercise progressively exposed the responsibilities required to do that safely:
+The exercise progressively exposed the responsibilities required to do
+that safely:
 
-1. protect shared pool state from race conditions;
-2. wait asynchronously when all resources are temporarily in use;
-3. associate availability with concrete resources;
-4. guarantee release when work fails;
-5. avoid indefinite acquisition through timeout and cancellation;
-6. keep the availability mechanism consistent with the actual resources in the pool.
+1.  protect shared pool state from race conditions;
+2.  wait asynchronously when all resources are temporarily in use;
+3.  associate availability with concrete resources;
+4.  guarantee release when work fails;
+5.  avoid indefinite acquisition through timeout and cancellation;
+6.  keep the availability mechanism consistent with the actual resources
+    in the pool.
 
-`SemaphoreSlim` coordinates availability, but it does not replace the resource collection. The pool needs both the logical availability count and the concrete resources, with synchronization that keeps those two representations consistent.
+`SemaphoreSlim` coordinates availability, but it does not replace the
+resource collection. The pool needs both the logical availability count
+and the concrete resources, with synchronization that keeps those two
+representations consistent.

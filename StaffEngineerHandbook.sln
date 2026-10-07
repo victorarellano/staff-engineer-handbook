@@ -9,17 +9,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level1.BackendFoundations",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Concurrency", "Concurrency", "{7C8D9FE1-DEAB-E4B1-63B0-7C8A6CD36D25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButcherShopSimulation", "src\Concurrency\ButcherShopSimulation\ButcherShopSimulation.csproj", "{7D4A0221-73F4-469B-8BE3-8909814E95C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButcherShopSimulation", "src\DeepDives\Concurrency\ButcherShopSimulation\ButcherShopSimulation.csproj", "{7D4A0221-73F4-469B-8BE3-8909814E95C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProducerConsumerSimulation", "src\Concurrency\ProducerConsumerSimulation\ProducerConsumerSimulation.csproj", "{D96ADC11-E198-440E-AE4E-F2961EFC6165}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProducerConsumerSimulation", "src\DeepDives\Concurrency\ProducerConsumerSimulation\ProducerConsumerSimulation.csproj", "{D96ADC11-E198-440E-AE4E-F2961EFC6165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryVehiclePoolSimulation", "src\Concurrency\DeliveryVehiclePoolSimulation\DeliveryVehiclePoolSimulation.csproj", "{5BBC6549-F01F-4B16-8946-E4AC79797777}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryVehiclePoolSimulation", "src\DeepDives\Concurrency\DeliveryVehiclePoolSimulation\DeliveryVehiclePoolSimulation.csproj", "{5BBC6549-F01F-4B16-8946-E4AC79797777}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankTransferDeadlockSimulation", "src\Concurrency\BankTransferDeadlockSimulation\BankTransferDeadlockSimulation.csproj", "{909879FD-C06C-4534-BEE5-F5D1995DA621}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankTransferDeadlockSimulation", "src\DeepDives\Concurrency\BankTransferDeadlockSimulation\BankTransferDeadlockSimulation.csproj", "{909879FD-C06C-4534-BEE5-F5D1995DA621}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateLimitedServiceSimulation", "src\Concurrency\RateLimitedServiceSimulation\RateLimitedServiceSimulation.csproj", "{0D738327-1091-4AC7-800D-0BAAF4465174}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateLimitedServiceSimulation", "src\DeepDives\Concurrency\RateLimitedServiceSimulation\RateLimitedServiceSimulation.csproj", "{0D738327-1091-4AC7-800D-0BAAF4465174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedInventorySimulation", "src\Concurrency\DistributedInventorySimulation\DistributedInventorySimulation.csproj", "{3682ABF0-5026-4A07-91EF-4A67759C88C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedInventorySimulation", "src\DeepDives\Concurrency\DistributedInventorySimulation\DistributedInventorySimulation.csproj", "{3682ABF0-5026-4A07-91EF-4A67759C88C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepDives", "DeepDives", "{733BA84C-BC87-427C-FB78-64568383C886}"
 EndProject
