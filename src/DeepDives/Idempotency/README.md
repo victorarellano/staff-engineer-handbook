@@ -124,7 +124,7 @@ The labs intentionally preserve intermediate implementations:
           v
     03 - Database
           |
-          | move invariant ....
+          | atomically persist the intent to publish
           v
     04 - Transactional Outbox
 
